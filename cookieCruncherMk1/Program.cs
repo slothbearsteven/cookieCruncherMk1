@@ -13,52 +13,43 @@ namespace cookieCruncherMk1
         static void Main(string[] args)
         {
             bool isActive = true;
+            Console.WriteLine("How many iterations shall be ran?");
+
+            int maxIterations = int.Parse(Console.ReadLine());
+            int currentIteration = 0;
+
             IWebDriver driver = new ChromeDriver();
             driver.Url = "https://orteil.dashnet.org/cookieclicker/test/";
 
-            while (isActive) {
+            Setup(driver);
+
+            while (isActive)
+            {
                 CookieClicker(driver);
                 ProductPurchase(driver);
                 UpgradePurchase(driver);
+                currentIteration++;
+                if (currentIteration >= maxIterations) { isActive = false; }
             }
 
-            driver.Quit();
+            driver.Close();
 
         }
 
       static void CookieClicker(IWebDriver driver)
-        {
+        { //gets the cookie image the user can click on, and continually clicks on it once called
             IWebElement cookieImage = driver.FindElement(By.Id("bigCookie"));
             cookieImage.Click();
         }
 
         static void ProductPurchase(IWebDriver driver)
-        {
-            IWebElement product0 = driver.FindElement(By.Id("product0"));
-            IWebElement product1 = driver.FindElement(By.Id("product1"));
-            IWebElement product2 = driver.FindElement(By.Id("product2"));
-            IWebElement product3 = driver.FindElement(By.Id("product3"));
-            IWebElement product4 = driver.FindElement(By.Id("product4"));
-            IWebElement product5 = driver.FindElement(By.Id("product5"));
-            IWebElement product6 = driver.FindElement(By.Id("product6"));
-            IWebElement product7 = driver.FindElement(By.Id("product7"));
-            IWebElement product8 = driver.FindElement(By.Id("product8"));
-            IWebElement product9 = driver.FindElement(By.Id("product9"));
-            IWebElement product10 = driver.FindElement(By.Id("product10"));
-            IWebElement product11 = driver.FindElement(By.Id("product11"));
-            IWebElement product12 = driver.FindElement(By.Id("product12"));
-            IWebElement product13 = driver.FindElement(By.Id("product13"));
-            IWebElement product14 = driver.FindElement(By.Id("product14"));
-
-            List<IWebElement> products = new List<IWebElement>
-            {
-                product0,product1,product2,product3,product4,product5,product6,product7
-                ,product8,product9,product10,product11,product12, product13,product14
-
-            };
+        { //Finds all products, which are found in HTML at start of game, then adds them to a list object
+            IWebElement parentElem = driver.FindElement(By.Id("products"));
+            var products = parentElem.FindElements(By.XPath("./child::*"));
 
             for (int i = 14; i >= 0; i--)
             {
+                //iterates through the list, and checks if the current product can be bought, and buys it if able
                 string classOfP = products[i].GetAttribute("class");
 
                 if (classOfP =="product unlocked enabled")
@@ -72,10 +63,12 @@ namespace cookieCruncherMk1
      
         static void UpgradePurchase(IWebDriver driver)
         {
-
+        //Finds the current amount of the upgrades available, as they change based on the products purchased
         IWebElement parentElem = driver.FindElement(By.Id("upgrades"));
         var upgrades = parentElem.FindElements(By.XPath("./child::*"));
         
+
+            //iterates through the upgrades, checking if any of them can be bought, and if able buys the upgrade
         for(int i = 0; i < upgrades.Count; i++)
             {
                 try
@@ -93,6 +86,21 @@ namespace cookieCruncherMk1
 
             
 
+        }
+
+        static void Setup(IWebDriver driver)
+        {
+            IWebElement bakeryNameButton = driver.FindElement(By.Id("bakeryName"));
+            bakeryNameButton.Click();
+
+            IWebElement nameInput = driver.FindElement(By.Id("bakeryNameInput"));
+            IWebElement confirmButton = driver.FindElement(By.Id("promptOption0"));
+
+            nameInput.Clear();
+
+            nameInput.SendKeys("Selenium");
+
+            confirmButton.Click();
         }
     }
 }
