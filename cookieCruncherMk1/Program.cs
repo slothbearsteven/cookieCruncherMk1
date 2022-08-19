@@ -15,7 +15,13 @@ namespace cookieCruncherMk1
             bool isActive = true;
             Console.WriteLine("How many iterations shall be ran?");
 
-            int maxIterations = int.Parse(Console.ReadLine());
+            string userInput = Console.ReadLine();
+            int maxIterations;
+              if(  !int.TryParse(userInput, out maxIterations))
+            {
+                Console.WriteLine("Number not recognized. Setting iterations to default 1000");
+                maxIterations = 1000;
+            }
             int currentIteration = 0;
             int progressCheckpoint = maxIterations / 10;
             int percentFinished = 0;
