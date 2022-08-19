@@ -27,6 +27,7 @@ namespace cookieCruncherMk1
             {
                 CookieClicker(driver);
                 ProductPurchase(driver);
+                GoldenCookieCliker(driver);
                 UpgradePurchase(driver);
                 currentIteration++;
                 if (currentIteration >= maxIterations) { isActive = false; }
@@ -101,6 +102,16 @@ namespace cookieCruncherMk1
             nameInput.SendKeys("Selenium");
 
             confirmButton.Click();
+        }
+
+        static void GoldenCookieCliker(IWebDriver driver)
+        {
+            //tries to find the golden cookie by its unique class. If failed, performs a generic click on the big cookie    
+            try {
+                IWebElement goldenCookie = driver.FindElement(By.ClassName("shimmer"));
+                goldenCookie.Click();
+            }
+            catch { CookieClicker(driver);}
         }
     }
 }
