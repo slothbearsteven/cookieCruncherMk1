@@ -21,7 +21,7 @@ namespace cookieCruncherMk1
             int percentFinished = 0;
 
             IWebDriver driver = new ChromeDriver();
-            driver.Url = "https://orteil.dashnet.org/cookieclicker/test/";
+            driver.Url = "https://orteil.dashnet.org/cookieclicker/test";
 
             Setup(driver);
 
@@ -35,6 +35,8 @@ namespace cookieCruncherMk1
                 if(currentIteration%progressCheckpoint == 0) { percentFinished += 10; Console.WriteLine(percentFinished+"%"); }
                 if (currentIteration >= maxIterations) { isActive = false; }
             }
+
+            ObtainStats(driver);
 
             driver.Close();
 
@@ -115,6 +117,23 @@ namespace cookieCruncherMk1
                 goldenCookie.Click();
             }
             catch { CookieClicker(driver);}
+        }
+
+        static void ObtainStats(IWebDriver driver)
+        {
+            //Sends stats to the console, skipping the initial title, and then stopping before getting to game version
+            IWebElement statsButton = driver.FindElement(By.Id("statsButton"));
+            statsButton.Click();
+
+            IWebElement parentElem = driver.FindElement(By.XPath("//*[@id='menu']/div[3]"));
+            var stats = parentElem.FindElements(By.XPath("./child::*"));
+
+
+            for (int i = 1; i < stats.Count-1; i++)
+            {
+                string statText = stats[i].Text;
+                Console.WriteLine(statText);
+            }
         }
     }
 }
