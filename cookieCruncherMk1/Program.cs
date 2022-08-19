@@ -17,6 +17,8 @@ namespace cookieCruncherMk1
 
             int maxIterations = int.Parse(Console.ReadLine());
             int currentIteration = 0;
+            int progressCheckpoint = maxIterations / 10;
+            int percentFinished = 0;
 
             IWebDriver driver = new ChromeDriver();
             driver.Url = "https://orteil.dashnet.org/cookieclicker/test/";
@@ -30,6 +32,7 @@ namespace cookieCruncherMk1
                 GoldenCookieCliker(driver);
                 UpgradePurchase(driver);
                 currentIteration++;
+                if(currentIteration%progressCheckpoint == 0) { percentFinished += 10; Console.WriteLine(percentFinished+"%"); }
                 if (currentIteration >= maxIterations) { isActive = false; }
             }
 
